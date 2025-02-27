@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Currículo On-line</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('trabalho1.jpg') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        h1 {
+            color: #000;
+            font-size: 2.5em;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        label {
+            margin-top: 15px;
+            display: block;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .curriculo-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gerador de Currículo On-line</h1>
+    <div class="form-container">
+        <form id="curriculoForm">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" required>
+
+            <label for="contato">Contato:</label>
+            <input type="contato" id="contato" required>
+
+            <label for="experiencia">Experiência:</label>
+            <div id="experiencias">
+                <input type="text" id="cargo" placeholder="Cargo" required>
+                <input type="text" id="empresa" placeholder="Empresa" required>
+                <input type="text" id="ano" placeholder="Ano" required>
+            </div>
+
+            <button type="button" id="generateResume">Gerar Currículo</button>
+            <button type="button" id="downloadPdf">Baixar PDF</button>
+        </form>
+    </div>
+
+    <div id="curriculoDisplay" class="curriculo-container" style="display: none;">
+        <h2>Currículo Gerado</h2>
+        <p><strong>Nome:</strong> <span id="displayNome"></span></p>
+        <p><strong>Email:</strong> <span id="displayEmail"></span></p>
+        <p><strong>Contato:</strong> <span id="displayContato"></span></p>
+        <p><strong>Experiência:</strong> <span id="displayExperiencia"></span></p>
+    </div>
+
+    <script>
+        document.getElementById("generateResume").addEventListener("click", function() {
+            let nome = document.getElementById("nome").value;
+            let email = document.getElementById("email").value;
+            let contato = document.getElementById("contato").value;
+            let cargo = document.getElementById("cargo").value;
+            let empresa = document.getElementById("empresa").value;
+            let ano = document.getElementById("ano").value;
+
+            if (!nome || !email || !contato || !cargo || !empresa || !ano) {
+                alert("Preencha todos os campos!");
+                return;
+            }
+
+            document.getElementById("displayNome").textContent = nome;
+            document.getElementById("displayEmail").textContent = email;
+            document.getElementById("displayContato").textContent = contato;
+            document.getElementById("displayExperiencia").textContent = `${cargo} na ${empresa} (${ano})`;
+
+            document.getElementById("curriculoDisplay").style.display = "block";
+        });
+
+        document.getElementById("downloadPdf").addEventListener("click", function() {
+            let { jsPDF } = window.jspdf;
+            let doc = new jsPDF();
+
+            let nome = document.getElementById("nome").value;
+            let email = document.getElementById("email").value;
+            let contato = document.getElementById("contato").value;
+            let cargo = document.getElementById("cargo").value;
+            let empresa = document.getElementById("empresa").value;
+            let ano = document.getElementById("ano").value;
+
+            if (!nome || !email || !contato || !cargo || !empresa || !ano) {
+                alert("Preencha todos os campos antes de baixar o PDF!");
+                return;
+            }
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(18);
+            doc.text("Currículo", 105, 20, null, null, "center");
+
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Nome: ${nome}`, 20, 40);
+            doc.text(`Email: ${email}`, 20, 50);
+            doc.text(`Contato: ${contato}`, 20, 60);
+            doc.text(`Experiência: ${cargo} na ${empresa} (${ano})`, 20, 60);
+
+            doc.setLineWidth(1);
+            doc.rect(10, 10, 190, 277); // Borda no PDF
+
+            doc.save("curriculo.pdf");
+        });
+    </script>
+</body>
+</html>
